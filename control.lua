@@ -22,6 +22,7 @@ local function onTick()
       global.tickIndex = nil
     end
 
+    local data
     global.tickIndex,data = next(global.dynamic_assemblers,global.tickIndex)
 
     if data then
@@ -74,7 +75,7 @@ local function onBuilt(event)
 
     if not combinator then
       local ghost = entity.surface.find_entity("entity-ghost", combinatorpos)
-      if ghost.valid and ghost.ghost_name == "constant-combinator" then
+      if ghost and ghost.valid and ghost.ghost_name == "constant-combinator" then
         _,combinator = ghost.revive()
       end
     end
