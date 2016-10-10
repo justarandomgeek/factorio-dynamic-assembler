@@ -66,9 +66,16 @@ local function onTick()
   end
 end
 
+local dynamic_assembler_types = {
+  ['assembling-machine-dynamic']=true,
+  ['assembling-machine-dynamic-2']=true,
+  ['chemical-plant-dynamic']=true,
+}
+
 local function onBuilt(event)
   local entity = event.created_entity
-  if entity.name == "assembling-machine-dynamic" then
+  if dynamic_assembler_types[entity.name] then
+
     local combinatorpos = {entity.position.x+2,entity.position.y}
 
     local combinator = entity.surface.find_entity("constant-combinator",combinatorpos)
