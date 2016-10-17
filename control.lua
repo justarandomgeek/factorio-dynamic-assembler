@@ -39,16 +39,28 @@ local function onTick()
           end
         end
 
-        -- Output the current recipe on signal-R
-        local rid = 0
+        -- Output the current recipe on signal-R, and recipe input requests
+        local params={enabled=true,parameters={
+          {index=1,count=0,signal={name="signal-R",type="virtual"}}
+        }}
+
         if data.assembler.recipe and data.assembler.recipe.valid then
           --game.players[1].print("recipe: "..data.assembler.recipe.name)
-          rid = global.recipemap[data.assembler.recipe.name] or 0
+          params.parameters[1].count = global.recipemap[data.assembler.recipe.name] or 0
           --game.players[1].print("rid: " .. rid)
+          for _,ingredient in pairs(data.assembler.recipe.ingredients) do
+            local i = #params.parameters+1
+            local amount = ingredient.amount*10
+            params.parameters[i] =
+              {
+                index = i, count = amount,
+                signal={name=ingredient.name,type=ingredient.type}
+              }
+          end
         end
-        data.control.parameters={enabled=true,parameters={
-          {index=1,count=rid,signal={name="signal-R",type="virtual"}}
-        }}
+
+        data.control.parameters = params
+
       elseif data.assembler.valid and data.combinator.valid then
         data.control = data.combinator.get_or_create_control_behavior()
         global.dynamic_assemblers[index] = data
